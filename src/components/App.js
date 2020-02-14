@@ -11,7 +11,11 @@ export default class App extends Component {
     filter: ""
   };
 
-  handleAddContact = ({ name, number }) => {
+  handleAddContact = (name, number) => {
+    if (this.contactAvailable(name)) {
+      alert(`${name} is alredy in contacts`);
+      return;
+    }
     const contact = {
       id: shortid.generate(),
       name,
@@ -32,27 +36,36 @@ export default class App extends Component {
     this.setState({ filter });
   };
 
-  // getVisibleTasks = () => {
-  //   const { contacts, filter } = this.state;
+  handleVisibleTasks = () => {
+    const { contacts, filter } = this.state;
 
-  //   return contacts.filter(contact =>
-  //     contact.name.toLowerCase().includes(filter.toLowerCase())
-  //   );
-  // };
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
+  };
+
+  contactAvailable = contact => {
+    const { contacts } = this.state;
+    return contacts.find(
+      ({ name }) => name.toLowerCase() === contact.toLowerCase()
+    );
+  };
 
   render() {
-    const { filter, contacts } = this.state;
-    // const visibleTasks = this.getVisibleTasks;
+    const { filter } = this.state;
+    const getVisibleTasks = this.handleVisibleTasks();
     return (
       <Layout>
         <h1>Phonebook</h1>
-        <ContactForm getAddContact={this.handleAddContact} />
+        <ContactForm onAddContact={this.handleAddContact} />
         <h2>Contacts</h2>
+        {getVisibleTasks.length >= 2 && (
+          <Filter value={filter} onFilterChange={this.handleFilterChange} />
+        )}
         <ContactList
-          contacts={contacts}
+          contacts={getVisibleTasks}
           onRemoveContact={this.handleRemoveContact}
         />
-        <Filter value={filter} onFilterChange={this.handleFilterChange} />
       </Layout>
     );
   }
