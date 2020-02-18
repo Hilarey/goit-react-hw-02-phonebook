@@ -52,14 +52,14 @@ export default class App extends Component {
   };
 
   render() {
-    const { filter } = this.state;
+    const { filter, contacts } = this.state;
     const getVisibleTasks = this.handleVisibleTasks();
     return (
       <Layout>
         <h1>Phonebook</h1>
         <ContactForm onAddContact={this.handleAddContact} />
         <h2>Contacts</h2>
-        {getVisibleTasks.length >= 2 && (
+        {contacts.length >= 2 && (
           <Filter value={filter} onFilterChange={this.handleFilterChange} />
         )}
         <ContactList
